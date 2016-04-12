@@ -37,3 +37,22 @@ inCircle r c = hypot c <= r
 circle :: Double -> a -> a -> Image a
 circle r i o = \c -> if inCircle r c then i else o
 
+-- what we can do now is pretty cool
+--
+-- this converts a grid into distances from the origin
+-- fmap hypot (grid (-5,-5) (5,5) 5 5)
+--
+-- this puts each dist in a box, separating it for readability
+-- fmap ((:[]) . hypot) (grid (-5,-5) (5,5) 5 5)
+--
+-- or we can put quotes around each dist
+-- fmap (show . hypot) (grid (-5,-5) (5,5) 5 5)
+--
+-- we can render out the truth of containment in a circle
+-- fmap (inCircle 3) (grid (-5,-5) (5,5) 11 11)
+--
+-- we can render out the truth of containment in a circle
+-- fmap (inCircle 3) (grid (-5,-5) (5,5) 11 11)
+--
+-- we can even convert that back into a Grid of Colors
+-- fmap ((\x -> if x then Red else Green) . inCircle 3) (grid (-5,-5) (5,5) 11 11)
