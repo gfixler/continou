@@ -1,4 +1,5 @@
-data Color = Black
+data Color = None
+           | Black
            | Red
            | Green
            | Yellow
@@ -17,6 +18,7 @@ data Color = Black
            deriving (Bounded,Enum,Eq,Show)
 
 fgnum :: Color -> Int
+fgnum None      = 39
 fgnum Black     = 30
 fgnum Red       = 31
 fgnum Green     = 32
@@ -48,4 +50,7 @@ withFG c s = fg c ++ s ++ fg None
 
 withBG :: Color -> String -> String
 withBG c s = bg c ++ s ++ bg None
+
+withBGFG :: Color -> Color -> String -> String
+withBGFG bg fg = withBG bg . withFG fg
 
