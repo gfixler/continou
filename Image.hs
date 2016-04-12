@@ -20,6 +20,5 @@ grid (l,b) (r,t) w h =
         [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
 
 render :: Coord -> Coord -> Int -> Int -> Image a -> [[a]]
-render (l,b) (r,t) w h f =
-        [[f (x,y) | x <- lerp l r w] | y <- lerp t b h]
+render lb rt w h f = map (map f) (grid lb rt w h)
 
