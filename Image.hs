@@ -2,6 +2,7 @@
 
 module Image where
 
+import Data.Monoid ((<>))
 import Color
 
 type Coord = (Double, Double)
