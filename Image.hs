@@ -28,3 +28,12 @@ always = const
 leftAndRight :: a -> a -> Image a
 leftAndRight l r = \(x,y) -> if x < 0 then l else r
 
+hypot :: Coord -> Double
+hypot (x,y) = sqrt (x * x + y * y)
+
+inCircle :: Double -> Coord -> Bool
+inCircle r c = hypot c <= r
+
+circle :: Double -> a -> a -> Image a
+circle r i o = \c -> if inCircle r c then i else o
+
