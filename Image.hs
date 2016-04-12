@@ -4,6 +4,7 @@ import Color
 
 type Coord = (Double, Double)
 type Image a = Coord -> a
+type Grid a = [[a]]
 
 always :: a -> Image a
 always = const
@@ -15,10 +16,10 @@ lerp :: (Enum a, Fractional a) => a -> a -> Int -> [a]
 lerp s e n = [(e - s) / n' * i + s | i <- [0..n']]
     where n' = fromIntegral (n - 1)
 
-grid :: Coord -> Coord -> Int -> Int -> [[Coord]]
+grid :: Coord -> Coord -> Int -> Int -> Grid Coord
 grid (l,b) (r,t) w h =
         [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
 
-render :: Image a -> [[Coord]] -> [[a]]
+render :: Image a -> Grid Coord -> Grid a
 render f = map (map f)
 
