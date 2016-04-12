@@ -34,3 +34,6 @@ fgnum LtMagenta = 95
 fgnum LtCyan    = 96
 fgnum White     = 97
 
+bgnum :: Color -> Int
+bgnum = (+10) . fgnum
+
