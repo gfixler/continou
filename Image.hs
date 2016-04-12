@@ -41,3 +41,11 @@ circle r i o = \c -> if inCircle r c then i else o
 shift :: Coord -> Coord -> Coord
 shift (u,v) (x,y) = (x+u,y+v)
 
+rot :: Double -> Coord -> Coord
+rot a (x,y) = ( x * cos a' - y * sin a',
+                y * cos a' + x * sin a' )
+    where a' = -a * pi / 180
+
+rotAt :: Coord -> Double -> Coord -> Coord
+rotAt (x,y) a = shift (-x,-y) . rot a . shift (x,y)
+
