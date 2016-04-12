@@ -2,8 +2,8 @@ module Image where
 
 import Color
 
-type Image = (Double, Double) -> Color
+type Image a = (Double, Double) -> a
 
-alwaysBlue :: Image
+alwaysBlue :: Image Color
 alwaysBlue = \(x,y) -> Blue
 
