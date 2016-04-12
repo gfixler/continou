@@ -37,3 +37,9 @@ fgnum White     = 97
 bgnum :: Color -> Int
 bgnum = (+10) . fgnum
 
+fg :: Color -> String
+fg c = "\ESC[" ++ show (fgnum c) ++ "m"
+
+bg :: Color -> String
+bg c = "\ESC[" ++ show (bgnum c) ++ "m"
+
