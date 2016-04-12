@@ -1,10 +1,12 @@
+{-# LANGUAGE DeriveFunctor #-}
+
 module Image where
 
 import Color
 
 type Coord = (Double, Double)
 type Image a = Coord -> a
-newtype Grid a = Grid { runGrid :: [[a]] }
+newtype Grid a = Grid { runGrid :: [[a]] } deriving Functor
 
 instance Show a => Show (Grid a) where
     show = unlines . map (concatMap show) . runGrid
