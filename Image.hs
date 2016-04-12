@@ -15,6 +15,10 @@ lerp :: (Enum a, Fractional a) => a -> a -> Int -> [a]
 lerp s e n = [(e - s) / n' * i + s | i <- [0..n']]
     where n' = fromIntegral (n - 1)
 
+grid :: Coord -> Coord -> Int -> Int -> [[Coord]]
+grid (l,b) (r,t) w h =
+        [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
+
 render :: Coord -> Coord -> Int -> Int -> Image a -> [[a]]
 render (l,b) (r,t) w h f =
         [[f (x,y) | x <- lerp l r w] | y <- lerp t b h]
