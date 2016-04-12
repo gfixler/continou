@@ -6,6 +6,9 @@ type Coord = (Double, Double)
 type Image a = Coord -> a
 newtype Grid a = Grid { runGrid :: [[a]] }
 
+instance Show a => Show (Grid a) where
+    show = unlines . map (concatMap show) . runGrid
+
 always :: a -> Image a
 always = const
 
