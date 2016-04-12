@@ -38,3 +38,6 @@ inCircle r c = hypot c <= r
 circle :: Double -> a -> a -> Image a
 circle r i o = \c -> if inCircle r c then i else o
 
+shift :: Coord -> Coord -> Coord
+shift (u,v) (x,y) = (x+u,y+v)
+
