@@ -18,7 +18,7 @@ data Color = None
            deriving (Bounded,Enum,Eq)
 
 instance Show Color where
-    show c = withBG c " "
+    show = flip withBG " "
 
 fgnum :: Color -> Int
 fgnum None      = 39
