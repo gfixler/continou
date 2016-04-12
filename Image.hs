@@ -38,10 +38,3 @@ inCircle r c = hypot c <= r
 circle :: Double -> a -> a -> Image a
 circle r i o = \c -> if inCircle r c then i else o
 
--- we can mappend any Images that yield monoidal values
--- render (leftAndRight Yellow Blue <> circle 4 Red White) (grid (-5,-5) (5,5) 40 20)
--- render (leftAndRight Yellow Blue <> circle 4 None White) (grid (-5,-5) (5,5) 40 20)
---
--- here, Images of Sum monoids add up as images are stacked
--- render (leftAndRight (Sum 1) (Sum 2) <> circle 4 (Sum 0) (Sum 5)) (grid (-5,-5) (5,5) 40 20)
-
