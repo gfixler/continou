@@ -4,7 +4,7 @@ import Color
 
 type Coord = (Double, Double)
 type Image a = Coord -> a
-type Grid a = [[a]]
+newtype Grid a = Grid { runGrid :: [[a]] }
 
 always :: a -> Image a
 always = const
@@ -18,8 +18,8 @@ lerp s e n = [(e - s) / n' * i + s | i <- [0..n']]
 
 grid :: Coord -> Coord -> Int -> Int -> Grid Coord
 grid (l,b) (r,t) w h =
-        [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
+        Grid [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
 
 render :: Image a -> Grid Coord -> Grid a
-render f = map (map f)
+render f = Grid . map (map f) . runGrid
 
