@@ -1,5 +1,7 @@
 module Color where
 
+import Data.Monoid (Monoid, mempty, mappend, (<>))
+
 data Color = None
            | Black
            | Red
@@ -21,6 +23,11 @@ data Color = None
 
 instance Show Color where
     show = flip withBG " "
+
+instance Monoid Color where
+    mempty = None
+    c `mappend` None = c
+    _ `mappend` c = c
 
 fgnum :: Color -> Int
 fgnum None      = 39
