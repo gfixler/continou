@@ -1,3 +1,5 @@
+module Color where
+
 data Color = None
            | Black
            | Red
