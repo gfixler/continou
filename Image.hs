@@ -19,6 +19,6 @@ grid :: Coord -> Coord -> Int -> Int -> [[Coord]]
 grid (l,b) (r,t) w h =
         [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
 
-render :: [[Coord]] -> Image a -> [[a]]
-render css f = map (map f) css
+render :: Image a -> [[Coord]] -> [[a]]
+render f css = map (map f) css
 
