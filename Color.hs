@@ -15,7 +15,10 @@ data Color = None
            | LtMagenta
            | LtCyan
            | White
-           deriving (Bounded,Enum,Eq,Show)
+           deriving (Bounded,Enum,Eq)
+
+instance Show Color where
+    show c = withBG c " "
 
 fgnum :: Color -> Int
 fgnum None      = 39
