@@ -43,3 +43,9 @@ fg c = "\ESC[" ++ show (fgnum c) ++ "m"
 bg :: Color -> String
 bg c = "\ESC[" ++ show (bgnum c) ++ "m"
 
+withFG :: Color -> String -> String
+withFG c s = fg c ++ s ++ fg None
+
+withBG :: Color -> String -> String
+withBG c s = bg c ++ s ++ bg None
+
