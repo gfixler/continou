@@ -72,3 +72,6 @@ tile (l,b) (r,t) (x,y) = (x',y')
 stdGrid :: Grid Coord
 stdGrid = grid (-5,-5) (5,5) 56 28
 
+bigGrid :: Grid Coord
+bigGrid = grid (-5,-5) (5,5) 80 40
+
