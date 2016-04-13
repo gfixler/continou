@@ -2,6 +2,8 @@
 
 module Image where
 
+import Data.Function (on)
+import Data.Monoid ((<>))
 import Color
 
 type Coord = (Double, Double)
@@ -22,9 +24,6 @@ grid (l,b) (r,t) w h =
 render :: Image a -> Grid Coord -> Grid a
 render = fmap
 
-always :: a -> Image a
-always = const
-
 leftAndRight :: a -> a -> Image a
 leftAndRight l r = \(x,y) -> if x < 0 then l else r
 
@@ -36,4 +35,40 @@ inCircle r c = hypot c <= r
 
 circle :: Double -> a -> a -> Image a
 circle r i o = \c -> if inCircle r c then i else o
+
+checkers :: a -> a -> Image a
+checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
+                             then b else w
+
+shift :: Coord -> Coord -> Coord
+shift (u,v) (x,y) = (x+u,y+v)
+
+rot :: Double -> Coord -> Coord
+rot a (x,y) = ( x * cos a' - y * sin a',
+                y * cos a' + x * sin a' )
+    where a' = -a * pi / 180
+
+rotAt :: Coord -> Double -> Coord -> Coord
+rotAt (x,y) a = shift (-x,-y) . rot a . shift (x,y)
+
+swirl :: Double -> Coord -> Coord
+swirl a c = rot (hypot c**a) c
+
+toRange :: Double -> Double -> Double -> Double
+toRange l h x | l == h = l
+              | h < l = toRange h l x
+              | l <= x && x <= h = x
+              | x > h = negate $ toRange (-h) (-l) (-x)
+              | otherwise = f (o / r) * r + x
+                    where f = fromIntegral . ceiling
+                          o = l - x
+                          r = h - l
+
+tile :: Coord -> Coord -> Coord -> Coord
+tile (l,b) (r,t) (x,y) = (x',y')
+    where x' = toRange l r x
+          y' = toRange t b y
+
+stdGrid :: Grid Coord
+stdGrid = grid (-5,-5) (5,5) 56 28
 
