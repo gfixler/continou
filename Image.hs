@@ -31,6 +31,9 @@ grid (l,b) (r,t) w h =
 render :: Image a -> Grid Coord -> Grid a
 render = fmap
 
+upresY :: Grid Coord -> Grid Coord
+upresY = Grid . spersolate (zipWith midCoord) . runGrid
+
 leftAndRight :: a -> a -> Image a
 leftAndRight l r = \(x,y) -> if x < 0 then l else r
 
