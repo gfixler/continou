@@ -20,6 +20,10 @@ lerp s e n = [(e - s) / n' * i + s | i <- [0..n']]
 midCoord :: Coord -> Coord -> Coord
 midCoord (x,y) (x',y') = ((x + x') / 2, (y + y') / 2)
 
+spersolate :: (a -> a -> a) -> [a] -> [a]
+spersolate f (x:y:ys) = x : f x y : spersolate f (y:ys)
+spersolate _ xs = xs
+
 grid :: Coord -> Coord -> Int -> Int -> Grid Coord
 grid (l,b) (r,t) w h =
         Grid [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
