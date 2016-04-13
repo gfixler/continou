@@ -2,6 +2,7 @@
 
 module Image where
 
+import Data.Function (on)
 import Data.Monoid ((<>))
 import Color
 
@@ -37,6 +38,10 @@ inCircle r c = hypot c <= r
 
 circle :: Double -> a -> a -> Image a
 circle r i o = \c -> if inCircle r c then i else o
+
+checkers :: a -> a -> Image a
+checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
+                             then b else w
 
 shift :: Coord -> Coord -> Coord
 shift (u,v) (x,y) = (x+u,y+v)
