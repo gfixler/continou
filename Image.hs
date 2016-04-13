@@ -38,6 +38,10 @@ pairBy :: (a -> a -> b) -> [a] -> [b]
 pairBy f (x:y:ys) = f x y : pairBy f ys
 pairBy _ _ = []
 
+renderh :: Image Color -> Grid Coord -> Grid ColorPair
+renderh im = Grid . mergeDown . runGrid . render im . upresY
+    where mergeDown = pairBy (zipWith (curry ColorPair))
+
 leftAndRight :: a -> a -> Image a
 leftAndRight l r = \(x,y) -> if x < 0 then l else r
 
