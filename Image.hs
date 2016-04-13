@@ -66,3 +66,6 @@ tile (l,b) (r,t) (x,y) = (x',y')
     where x' = toRange l r x
           y' = toRange t b y
 
+stdGrid :: Grid Coord
+stdGrid = grid (-5,-5) (5,5) 56 28
+
