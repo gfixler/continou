@@ -54,3 +54,8 @@ toRange a b x | x > (max b a) = toRange a b (x - (abs (b - a)))
               | x < (min b a) = toRange a b (x + (abs (b - a)))
               | otherwise = x
 
+tile :: Coord -> Coord -> Coord -> Coord
+tile (l,b) (r,t) (x,y) = (x',y')
+    where x' = toRange l r x
+          y' = toRange t b y
+
