@@ -49,3 +49,8 @@ rot a (x,y) = ( x * cos a' - y * sin a',
 rotAt :: Coord -> Double -> Coord -> Coord
 rotAt (x,y) a = shift (-x,-y) . rot a . shift (x,y)
 
+toRange :: (Ord a, Num a) => a -> a -> a -> a
+toRange a b x | x > (max b a) = toRange a b (x - (abs (b - a)))
+              | x < (min b a) = toRange a b (x + (abs (b - a)))
+              | otherwise = x
+
