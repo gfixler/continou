@@ -29,6 +29,18 @@ instance Monoid Color where
     c `mappend` None = c
     _ `mappend` c = c
 
+data ColorPair = ColorPair (Color, Color)
+
+instance Show ColorPair where
+    show (ColorPair (t,b)) = withBGFG t b "▄"
+
+instance Monoid ColorPair where
+    mempty = ColorPair (None, None)
+    (ColorPair (t,b)) `mappend` (ColorPair (None,None)) = ColorPair (t,b)
+    (ColorPair (_,b)) `mappend` (ColorPair (t,None)) = ColorPair (t,b)
+    (ColorPair (t,_)) `mappend` (ColorPair (None,b)) = ColorPair (t,b)
+    (ColorPair (_,_)) `mappend` (ColorPair (t,b)) = ColorPair (t,b)
+
 fgnum :: Color -> Int
 fgnum None      = 39
 fgnum Black     = 30
