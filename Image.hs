@@ -54,6 +54,9 @@ rotAt (x,y) a = shift (-x,-y) . rot a . shift (x,y)
 swirl :: Double -> Coord -> Coord
 swirl a c = rot (hypot c**a) c
 
+-- swirl in action on a half-colorized checkboard
+-- render ((leftAndRight White Red <> checkers Black None) . swirl 2 . rot 180) (grid (-20,-20) (20,20) 80 40)
+
 toRange :: Double -> Double -> Double -> Double
 toRange l h x | l == h = l
               | h < l = toRange h l x
