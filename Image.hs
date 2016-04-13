@@ -34,6 +34,10 @@ render = fmap
 upresY :: Grid Coord -> Grid Coord
 upresY = Grid . spersolate (zipWith midCoord) . runGrid
 
+pairBy :: (a -> a -> b) -> [a] -> [b]
+pairBy f (x:y:ys) = f x y : pairBy f ys
+pairBy _ _ = []
+
 leftAndRight :: a -> a -> Image a
 leftAndRight l r = \(x,y) -> if x < 0 then l else r
 
