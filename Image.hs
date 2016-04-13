@@ -51,6 +51,9 @@ rot a (x,y) = ( x * cos a' - y * sin a',
 rotAt :: Coord -> Double -> Coord -> Coord
 rotAt (x,y) a = shift (-x,-y) . rot a . shift (x,y)
 
+swirl :: Double -> Coord -> Coord
+swirl a c = rot (hypot c**a) c
+
 toRange :: Double -> Double -> Double -> Double
 toRange l h x | l == h = l
               | h < l = toRange h l x
