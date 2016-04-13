@@ -51,10 +51,15 @@ rot a (x,y) = ( x * cos a' - y * sin a',
 rotAt :: Coord -> Double -> Coord -> Coord
 rotAt (x,y) a = shift (-x,-y) . rot a . shift (x,y)
 
-toRange :: (Ord a, Num a) => a -> a -> a -> a
-toRange a b x | x > (max b a) = toRange a b (x - (abs (b - a)))
-              | x < (min b a) = toRange a b (x + (abs (b - a)))
-              | otherwise = x
+toRange :: Double -> Double -> Double -> Double
+toRange l h x | l == h = l
+              | h < l = toRange h l x
+              | l <= x && x <= h = x
+              | x > h = negate $ toRange (-h) (-l) (-x)
+              | otherwise = f (o / r) * r + x
+                    where f = fromIntegral . ceiling
+                          o = l - x
+                          r = h - l
 
 tile :: Coord -> Coord -> Coord -> Coord
 tile (l,b) (r,t) (x,y) = (x',y')
