@@ -43,3 +43,8 @@ explorelate 'j' = ViewPed (-0.25)
 explorelate 'k' = ViewPed (0.25)
 explorelate _   = NoAction
 
+exploreact :: ExploreAction -> Explorer a -> Explorer a
+exploreact (ViewPan n) = pan n
+exploreact (ViewPed n) = ped n
+exploreact _           = id
+
