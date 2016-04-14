@@ -54,5 +54,5 @@ main = do
         ks = "hljkq"
     explorender e
     c <- silently (trap (`elem` ks) ("valid keys: " ++ ks))
-    explorender e
+    explorender (exploreact (explorelate c) e)
 
