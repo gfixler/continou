@@ -54,7 +54,9 @@ explore e = do
     let ks = "hljkq"
     explorender e
     c <- silently (trap (`elem` ks) ("Valid keys: " ++ ks))
-    explore (exploreact (explorelate c) e)
+    if c == 'q'
+        then return ()
+        else explore (exploreact (explorelate c) e)
 
 main = do
     putStrLn "\ESC[2J;\ESC[0;0f"
