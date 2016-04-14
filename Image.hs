@@ -45,6 +45,15 @@ renderh im = Grid . mergeDown . runGrid . render im . upresY
 leftAndRight :: Image a -> Image a -> Image a
 leftAndRight l r = \(x,y) -> if x < 0 then l (x,y) else r (x,y)
 
+between :: Ord a => a -> a -> a -> Bool
+between a b x = a <= x && x <= b || b <= x && x <= a
+
+inRect :: Coord -> Coord -> Coord -> Bool
+inRect (l,b) (r,t) (x,y) = between l r x && between b t y
+
+rect :: Coord -> Coord -> Image a -> Image a -> Image a
+rect lb rt i o = \c -> if inRect lb rt c then i c else o c
+
 hypot :: Coord -> Double
 hypot (x,y) = sqrt (x * x + y * y)
 
