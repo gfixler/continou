@@ -22,3 +22,19 @@ explorender e = do
     putStrLn $ show $ render (img e) (grid (lb e) (rt e) (w e) (h e))
     return ()
 
+viewLeft :: Double -> Explorer a -> Explorer a
+viewLeft n e = e { lb = let (x,y) = lb e in (x-n,y)
+                 , rt = let (x,y) = rt e in (x-n,y) }
+
+viewRight:: Double -> Explorer a -> Explorer a
+viewRight n e = e { lb = let (x,y) = lb e in (x+n,y)
+                  , rt = let (x,y) = rt e in (x+n,y) }
+
+viewUp:: Double -> Explorer a -> Explorer a
+viewUp n e = e { lb = let (x,y) = lb e in (x,y+n)
+               , rt = let (x,y) = rt e in (x,y+n) }
+
+viewDown:: Double -> Explorer a -> Explorer a
+viewDown n e = e { lb = let (x,y) = lb e in (x,y-n)
+                 , rt = let (x,y) = rt e in (x,y-n) }
+
