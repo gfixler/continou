@@ -2,6 +2,7 @@ module Interact where
 
 import Color
 import Image
+import KeyFSM
 
 data Explorer a = Explorer { img :: Image a
                            , lb  :: Coord
@@ -47,4 +48,11 @@ exploreact :: ExploreAction -> Explorer a -> Explorer a
 exploreact (ViewPan n) = pan n
 exploreact (ViewPed n) = ped n
 exploreact _           = id
+
+main = do
+    let e = defColorExplorer
+        ks = "hljkq"
+    explorender e
+    c <- silently (trap (`elem` ks) ("valid keys: " ++ ks))
+    return ()
 
