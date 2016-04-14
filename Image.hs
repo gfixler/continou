@@ -42,8 +42,8 @@ renderh :: Image Color -> Grid Coord -> Grid ColorPair
 renderh im = Grid . mergeDown . runGrid . render im . upresY
     where mergeDown = pairBy (zipWith (curry ColorPair))
 
-leftAndRight :: a -> a -> Image a
-leftAndRight l r = \(x,y) -> if x < 0 then l else r
+leftAndRight :: Image a -> Image a -> Image a
+leftAndRight l r = \(x,y) -> if x < 0 then l (x,y) else r (x,y)
 
 hypot :: Coord -> Double
 hypot (x,y) = sqrt (x * x + y * y)
@@ -51,12 +51,12 @@ hypot (x,y) = sqrt (x * x + y * y)
 inCircle :: Double -> Coord -> Bool
 inCircle r c = hypot c <= r
 
-circle :: Double -> a -> a -> Image a
-circle r i o = \c -> if inCircle r c then i else o
+circle :: Double -> Image a -> Image a -> Image a
+circle r i o = \c -> if inCircle r c then i c else o c
 
-checkers :: a -> a -> Image a
+checkers :: Image a -> Image a -> Image a
 checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
-                             then b else w
+                             then b (x,y) else w (x,y)
 
 shift :: Coord -> Coord -> Coord
 shift (u,v) (x,y) = (x+u,y+v)
