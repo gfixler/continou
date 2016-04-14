@@ -54,5 +54,5 @@ main = do
         ks = "hljkq"
     explorender e
     c <- silently (trap (`elem` ks) ("valid keys: " ++ ks))
-    return ()
+    explorender e
 
