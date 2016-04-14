@@ -16,3 +16,9 @@ instance Show a => Show (Explorer a) where
 defColorExplorer :: Explorer Color
 defColorExplorer = Explorer (const White) (-5,-5) (5,5) 21 10
 
+explorender :: Show a => Explorer a -> IO ()
+explorender e = do
+    putStrLn "\ESC[H\ESC[0;0f"
+    putStrLn $ show $ render (img e) (grid (lb e) (rt e) (w e) (h e))
+    return ()
+
