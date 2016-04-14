@@ -33,6 +33,17 @@ pan, ped :: Double -> Explorer a -> Explorer a
 pan n = modView (+n) id (+n) id
 ped n = modView id (+n) id (+n)
 
+timeToward :: Num a => a -> a -> a -> a
+timeToward b t a = (b - a) * t + a
+
+zoom :: Double -> Explorer a -> Explorer a
+zoom n e = modView (timeToward r n)
+                   (timeToward t n)
+                   (timeToward l n)
+                   (timeToward b n) e
+    where (l,b) = lb e
+          (r,t) = rt e
+
 data ExploreAction = ViewPan Double
                    | ViewPed Double
                    | NoAction
