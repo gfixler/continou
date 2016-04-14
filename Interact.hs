@@ -19,7 +19,7 @@ defColorExplorer = Explorer (circle 4 (const Red) (const White)) (-5,-5) (5,5) 2
 
 explorender :: Show a => Explorer a -> IO ()
 explorender e = do
-    putStrLn "\ESC[2J\ESC[0;0f"
+    putStrLn "\ESC[0;0f"
     putStrLn $ show $ render (img e) (grid (lb e) (rt e) (w e) (h e))
     return ()
 
@@ -57,6 +57,7 @@ explore e = do
     explore (exploreact (explorelate c) e)
 
 main = do
+    putStrLn "\ESC[2J;\ESC[0;0f"
     let e = defColorExplorer
     explore e
 
