@@ -36,3 +36,10 @@ data ExploreAction = ViewPan Double
                    | ViewPed Double
                    | NoAction
 
+explorelate :: Char -> ExploreAction
+explorelate 'h' = ViewPan (-0.25)
+explorelate 'l' = ViewPan 0.25
+explorelate 'j' = ViewPed (-0.25)
+explorelate 'k' = ViewPed (0.25)
+explorelate _   = NoAction
+
