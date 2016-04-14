@@ -22,19 +22,13 @@ explorender e = do
     putStrLn $ show $ render (img e) (grid (lb e) (rt e) (w e) (h e))
     return ()
 
-viewLeft :: Double -> Explorer a -> Explorer a
-viewLeft n e = e { lb = let (x,y) = lb e in (x-n,y)
-                 , rt = let (x,y) = rt e in (x-n,y) }
+type CoordMod = Double -> Double
 
-viewRight:: Double -> Explorer a -> Explorer a
-viewRight n e = e { lb = let (x,y) = lb e in (x+n,y)
-                  , rt = let (x,y) = rt e in (x+n,y) }
+modView :: CoordMod -> CoordMod -> CoordMod -> CoordMod -> Explorer a -> Explorer a
+modView l b r t e = e { lb = let (x,y) = lb e in (l x,b y)
+                      , rt = let (x,y) = rt e in (r x,t y) }
 
-viewUp:: Double -> Explorer a -> Explorer a
-viewUp n e = e { lb = let (x,y) = lb e in (x,y+n)
-               , rt = let (x,y) = rt e in (x,y+n) }
-
-viewDown:: Double -> Explorer a -> Explorer a
-viewDown n e = e { lb = let (x,y) = lb e in (x,y-n)
-                 , rt = let (x,y) = rt e in (x,y-n) }
+pan, ped :: Double -> Explorer a -> Explorer a
+pan n = modView (+n) id (+n) id
+ped n = modView id (+n) id (+n)
 
