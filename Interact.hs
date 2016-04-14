@@ -32,3 +32,7 @@ pan, ped :: Double -> Explorer a -> Explorer a
 pan n = modView (+n) id (+n) id
 ped n = modView id (+n) id (+n)
 
+data ExploreAction = ViewPan Double
+                   | ViewPed Double
+                   | NoAction
+
