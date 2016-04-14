@@ -73,8 +73,8 @@ explore e = do
         then return ()
         else explore (exploreact (explorelate c) e)
 
-main = do
+main :: Show a => Explorer a -> IO ()
+main e = do
     putStrLn "\ESC[2J;\ESC[0;0f"
-    let e = defColorExplorer
     explore e
 
