@@ -46,6 +46,7 @@ zoom n e = modView (timeToward r n)
 
 data ExploreAction = ViewPan Double
                    | ViewPed Double
+                   | Zoom Double
                    | NoAction
 
 explorelate :: Char -> ExploreAction
@@ -53,16 +54,19 @@ explorelate 'h' = ViewPan (-0.25)
 explorelate 'l' = ViewPan 0.25
 explorelate 'j' = ViewPed (-0.25)
 explorelate 'k' = ViewPed (0.25)
+explorelate 'i' = Zoom 0.09
+explorelate 'o' = Zoom 1.1
 explorelate _   = NoAction
 
 exploreact :: ExploreAction -> Explorer a -> Explorer a
 exploreact (ViewPan n) = pan n
 exploreact (ViewPed n) = ped n
+exploreact (Zoom n)  = zoom n
 exploreact _           = id
 
 explore :: Show a => Explorer a -> IO ()
 explore e = do
-    let ks = "hljkq"
+    let ks = "hljkioq"
     explorender e
     c <- silently (trap (`elem` ks) ("Valid keys: " ++ ks))
     if c == 'q'
