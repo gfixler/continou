@@ -49,10 +49,14 @@ exploreact (ViewPan n) = pan n
 exploreact (ViewPed n) = ped n
 exploreact _           = id
 
+explore :: Show a => Explorer a -> IO ()
+explore e = do
+    let ks = "hljkq"
+    explorender e
+    c <- silently (trap (`elem` ks) ("Valid keys: " ++ ks))
+    explore (exploreact (explorelate c) e)
+
 main = do
     let e = defColorExplorer
-        ks = "hljkq"
-    explorender e
-    c <- silently (trap (`elem` ks) ("valid keys: " ++ ks))
-    explorender (exploreact (explorelate c) e)
+    explore e
 
