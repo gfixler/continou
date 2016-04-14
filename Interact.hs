@@ -15,7 +15,7 @@ instance Show a => Show (Explorer a) where
     show e = show (render (img e) (grid (lb e) (rt e) (w e) (h e)))
 
 defColorExplorer :: Explorer Color
-defColorExplorer = Explorer (const White) (-5,-5) (5,5) 21 10
+defColorExplorer = Explorer (circle 4 (const Red) (const White)) (-5,-5) (5,5) 25 12
 
 explorender :: Show a => Explorer a -> IO ()
 explorender e = do
