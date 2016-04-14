@@ -2,6 +2,7 @@
 
 module Image where
 
+import Data.Complex (Complex((:+)), magnitude)
 import Data.Function (on)
 import Data.Monoid ((<>))
 import Color
@@ -17,6 +18,13 @@ lerp :: (Enum a, Fractional a) => a -> a -> Int -> [a]
 lerp s e n = [(e - s) / n' * i + s | i <- [0..n']]
     where n' = fromIntegral (n - 1)
 
+midCoord :: Coord -> Coord -> Coord
+midCoord (x,y) (x',y') = ((x + x') / 2, (y + y') / 2)
+
+spersolate :: (a -> a -> a) -> [a] -> [a]
+spersolate f (x:y:ys) = x : f x y : spersolate f (y:ys)
+spersolate _ xs = xs
+
 grid :: Coord -> Coord -> Int -> Int -> Grid Coord
 grid (l,b) (r,t) w h =
         Grid [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
@@ -24,8 +32,28 @@ grid (l,b) (r,t) w h =
 render :: Image a -> Grid Coord -> Grid a
 render = fmap
 
-leftAndRight :: a -> a -> Image a
-leftAndRight l r = \(x,y) -> if x < 0 then l else r
+upresY :: Grid Coord -> Grid Coord
+upresY = Grid . spersolate (zipWith midCoord) . runGrid
+
+pairBy :: (a -> a -> b) -> [a] -> [b]
+pairBy f (x:y:ys) = f x y : pairBy f ys
+pairBy _ _ = []
+
+renderh :: Image Color -> Grid Coord -> Grid ColorPair
+renderh im = Grid . mergeDown . runGrid . render im . upresY
+    where mergeDown = pairBy (zipWith (curry ColorPair))
+
+leftAndRight :: Image a -> Image a -> Image a
+leftAndRight l r = \(x,y) -> if x < 0 then l (x,y) else r (x,y)
+
+between :: Ord a => a -> a -> a -> Bool
+between a b x = a <= x && x <= b || b <= x && x <= a
+
+inRect :: Coord -> Coord -> Coord -> Bool
+inRect (l,b) (r,t) (x,y) = between l r x && between b t y
+
+rect :: Coord -> Coord -> Image a -> Image a -> Image a
+rect lb rt i o = \c -> if inRect lb rt c then i c else o c
 
 hypot :: Coord -> Double
 hypot (x,y) = sqrt (x * x + y * y)
@@ -33,12 +61,12 @@ hypot (x,y) = sqrt (x * x + y * y)
 inCircle :: Double -> Coord -> Bool
 inCircle r c = hypot c <= r
 
-circle :: Double -> a -> a -> Image a
-circle r i o = \c -> if inCircle r c then i else o
+circle :: Double -> Image a -> Image a -> Image a
+circle r i o = \c -> if inCircle r c then i c else o c
 
-checkers :: a -> a -> Image a
+checkers :: Image a -> Image a -> Image a
 checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
-                             then b else w
+                             then b (x,y) else w (x,y)
 
 shift :: Coord -> Coord -> Coord
 shift (u,v) (x,y) = (x+u,y+v)
@@ -69,6 +97,16 @@ tile (l,b) (r,t) (x,y) = (x',y')
     where x' = toRange l r x
           y' = toRange t b y
 
+intToColor :: Int -> Color
+intToColor = ((cycle [succ $ succ minBound .. maxBound :: Color]) !!)
+
+mandelbrot :: RealFloat a => (a, a) -> Int
+mandelbrot (r,i) = length $ take 50 $ takeWhile ((<2) . magnitude) m
+    where m = (iterate (\z -> z^2 + (r :+ i) + 1) 0)
+
 stdGrid :: Grid Coord
 stdGrid = grid (-5,-5) (5,5) 56 28
+
+bigGrid :: Grid Coord
+bigGrid = grid (-5,-5) (5,5) 80 40
 
