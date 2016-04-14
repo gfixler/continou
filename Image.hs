@@ -2,6 +2,7 @@
 
 module Image where
 
+import Data.Complex (Complex((:+)), magnitude)
 import Data.Function (on)
 import Data.Monoid ((<>))
 import Color
@@ -95,6 +96,13 @@ tile :: Coord -> Coord -> Coord -> Coord
 tile (l,b) (r,t) (x,y) = (x',y')
     where x' = toRange l r x
           y' = toRange t b y
+
+intToColor :: Int -> Color
+intToColor = ((cycle [succ $ succ minBound .. maxBound :: Color]) !!)
+
+mandelbrot :: RealFloat a => (a, a) -> Int
+mandelbrot (r,i) = length $ take 50 $ takeWhile ((<2) . magnitude) m
+    where m = (iterate (\z -> z^2 + (r :+ i) + 1) 0)
 
 stdGrid :: Grid Coord
 stdGrid = grid (-5,-5) (5,5) 56 28
