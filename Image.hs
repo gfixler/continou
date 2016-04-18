@@ -14,9 +14,12 @@ newtype Grid a = Grid { runGrid :: [[a]] } deriving Functor
 instance Show a => Show (Grid a) where
     show = unlines . map (concatMap show) . runGrid
 
-lerp :: (Enum a, Fractional a) => a -> a -> Int -> [a]
-lerp s e n = [(e - s) / n' * i + s | i <- [0..n']]
-    where n' = fromIntegral (n - 1)
+lerp :: Fractional a => a -> a -> a -> a
+lerp a b t = (b - a) * t + a
+
+lerps :: (Enum a, Fractional a) => a -> a -> Int -> [a]
+lerps a b n = map (lerp a b) [0,1/n'..1]
+    where n' = fromIntegral (n-1)
 
 midCoord :: Coord -> Coord -> Coord
 midCoord (x,y) (x',y') = ((x + x') / 2, (y + y') / 2)
@@ -27,7 +30,7 @@ spersolate _ xs = xs
 
 grid :: Coord -> Coord -> Int -> Int -> Grid Coord
 grid (l,b) (r,t) w h =
-        Grid [[(x,y) | x <- lerp l r w] | y <- lerp t b h]
+        Grid [[(x,y) | x <- lerps l r w] | y <- lerps t b h]
 
 render :: Image a -> Grid Coord -> Grid a
 render = fmap
