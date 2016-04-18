@@ -36,10 +36,7 @@ instance Show ColorPair where
 
 instance Monoid ColorPair where
     mempty = ColorPair (None, None)
-    (ColorPair (t,b)) `mappend` (ColorPair (None,None)) = ColorPair (t,b)
-    (ColorPair (_,b)) `mappend` (ColorPair (t,None)) = ColorPair (t,b)
-    (ColorPair (t,_)) `mappend` (ColorPair (None,b)) = ColorPair (t,b)
-    (ColorPair (_,_)) `mappend` (ColorPair (t,b)) = ColorPair (t,b)
+    ColorPair (t,b) `mappend` ColorPair (t',b') = ColorPair (t <> t', b <> b')
 
 fgnum :: Color -> Int
 fgnum None      = 39
