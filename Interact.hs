@@ -29,9 +29,17 @@ modView :: CoordMod -> CoordMod -> CoordMod -> CoordMod -> Explorer a -> Explore
 modView l b r t e = e { lb = let (x,y) = lb e in (l x,b y)
                       , rt = let (x,y) = rt e in (r x,t y) }
 
-pan, ped :: Double -> Explorer a -> Explorer a
-pan n = modView (+n) id (+n) id
-ped n = modView id (+n) id (+n)
+pan :: Double -> Explorer a -> Explorer a
+pan n e = modView (+n') id (+n') id e
+    where (l,_) = lb e
+          (r,_) = rt e
+          n' = (r - l) * n
+
+ped :: Double -> Explorer a -> Explorer a
+ped n e = modView id (+n') id (+n') e
+    where (_,b) = lb e
+          (_,t) = rt e
+          n' = (t - b) * n
 
 zoom :: Double -> Explorer a -> Explorer a
 zoom n e = modView (const (lerp l r n))
@@ -47,10 +55,10 @@ data ExploreAction = ViewPan Double
                    | NoAction
 
 explorelate :: Char -> ExploreAction
-explorelate 'h' = ViewPan (-0.25)
-explorelate 'l' = ViewPan 0.25
-explorelate 'j' = ViewPed (-0.25)
-explorelate 'k' = ViewPed (0.25)
+explorelate 'h' = ViewPan (-0.2)
+explorelate 'l' = ViewPan 0.2
+explorelate 'j' = ViewPed (-0.2)
+explorelate 'k' = ViewPed (0.2)
 explorelate 'i' = Zoom 0.09
 explorelate 'o' = Zoom (-0.09)
 explorelate _   = NoAction
