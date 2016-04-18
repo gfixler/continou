@@ -73,6 +73,7 @@ explore :: Show a => Explorer a -> IO ()
 explore e = do
     let ks = "hljkioq"
     explorender e
+    putStrLn $ (show $ lb e) ++ "\n" ++ (show $ rt e)
     c <- silently (trap (`elem` ks) ("Valid keys: " ++ ks))
     if c == 'q'
         then return ()
