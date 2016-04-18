@@ -33,14 +33,11 @@ pan, ped :: Double -> Explorer a -> Explorer a
 pan n = modView (+n) id (+n) id
 ped n = modView id (+n) id (+n)
 
-timeToward :: Num a => a -> a -> a -> a
-timeToward b t a = (b - a) * t + a
-
 zoom :: Double -> Explorer a -> Explorer a
-zoom n e = modView (timeToward r n)
-                   (timeToward t n)
-                   (timeToward l n)
-                   (timeToward b n) e
+zoom n e = modView (const (lerp l r n))
+                   (const (lerp b t n))
+                   (const (lerp r l n))
+                   (const (lerp t b n)) e
     where (l,b) = lb e
           (r,t) = rt e
 
@@ -55,7 +52,7 @@ explorelate 'l' = ViewPan 0.25
 explorelate 'j' = ViewPed (-0.25)
 explorelate 'k' = ViewPed (0.25)
 explorelate 'i' = Zoom 0.09
-explorelate 'o' = Zoom 1.1
+explorelate 'o' = Zoom (-0.09)
 explorelate _   = NoAction
 
 exploreact :: ExploreAction -> Explorer a -> Explorer a
