@@ -103,13 +103,14 @@ tile (l,b) (r,t) (x,y) = (x',y')
 intToColor :: Int -> Color
 intToColor = ((cycle [succ $ succ minBound .. maxBound :: Color]) !!)
 
-mandelbrot :: RealFloat a => Int -> (a, a) -> Int
-mandelbrot l (r,i) = length $ take l $ takeWhile ((<2) . magnitude) m
-    where m = (iterate (\z -> z^2 + (r :+ i) + 1) 0)
+mandelbrot :: RealFloat a => Int -> (a, a) -> Maybe Int
+mandelbrot l (r,i) = if n == l then Nothing else Just n
+    where ms = iterate (\z -> z^2 + (r :+ i) + 1) 0
+          n  = length $ take l $ takeWhile ((<2) . magnitude) ms
 
 mandelbrotColor :: RealFloat a => Int -> (a, a) -> Color
-mandelbrotColor l c = if l == n then None else intToColor n
-    where n = mandelbrot l c
+mandelbrotColor l xy = case mandelbrot l xy of Nothing -> None
+                                               Just c  -> intToColor c
 
 stdGrid :: Grid Coord
 stdGrid = grid (-5,-5) (5,5) 56 28
