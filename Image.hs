@@ -101,7 +101,7 @@ tile (l,b) (r,t) (x,y) = (x',y')
           y' = toRange t b y
 
 intToColor :: Int -> Color
-intToColor = ((cycle [succ $ succ minBound .. maxBound :: Color]) !!)
+intToColor = ((cycle [succ $ succ minBound .. maxBound]) !!)
 
 mandelbrot :: RealFloat a => b -> (Int -> b) -> Int -> (a, a) -> b
 mandelbrot x f l (r,i) = if n == l then x else f n
