@@ -60,8 +60,14 @@ explorelate 'h' = ViewPan (-0.2)
 explorelate 'l' = ViewPan 0.2
 explorelate 'j' = ViewPed (-0.2)
 explorelate 'k' = ViewPed (0.2)
+explorelate 'H' = ViewPan (-0.5)
+explorelate 'L' = ViewPan 0.5
+explorelate 'J' = ViewPed (-0.5)
+explorelate 'K' = ViewPed (0.5)
 explorelate 'i' = Zoom 0.09
 explorelate 'o' = Zoom (-0.09)
+explorelate 'I' = Zoom 0.2
+explorelate 'O' = Zoom (-0.2)
 explorelate '0' = ResetView
 explorelate _   = NoAction
 
@@ -74,7 +80,7 @@ exploreact _           = id
 
 explore :: Show a => Explorer a -> IO ()
 explore e = do
-    let ks = "hljkio0q"
+    let ks = "hljkioHLJKIO0q"
     explorender e
     putStrLn $ (show $ lb e) ++ "\ESC[K\n" ++ (show $ rt e) ++ "\ESC[K"
     c <- silently (trap (`elem` ks) ("Valid keys: " ++ ks))
