@@ -114,9 +114,3 @@ mandelbrotColor = mandelbrot None intToColor
 sqrid :: Double -> Int -> Grid Coord
 sqrid iw rw = grid (-iw/2,-iw/2) (iw/2,iw/2) rw (rw `div` 2)
 
-stdGrid :: Grid Coord
-stdGrid = grid (-5,-5) (5,5) 56 28
-
-bigGrid :: Grid Coord
-bigGrid = grid (-5,-5) (5,5) 80 40
-
