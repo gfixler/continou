@@ -52,6 +52,7 @@ zoom n e = modView (const (lerp l r n))
 data ExploreAction = ViewPan Double
                    | ViewPed Double
                    | Zoom Double
+                   | ResetView
                    | NoAction
 
 explorelate :: Char -> ExploreAction
@@ -61,17 +62,19 @@ explorelate 'j' = ViewPed (-0.2)
 explorelate 'k' = ViewPed (0.2)
 explorelate 'i' = Zoom 0.09
 explorelate 'o' = Zoom (-0.09)
+explorelate '0' = ResetView
 explorelate _   = NoAction
 
 exploreact :: ExploreAction -> Explorer a -> Explorer a
 exploreact (ViewPan n) = pan n
 exploreact (ViewPed n) = ped n
-exploreact (Zoom n)  = zoom n
+exploreact (Zoom n)    = zoom n
+exploreact ResetView   = \e -> e { lb = (-5,-5), rt = (5,5) }
 exploreact _           = id
 
 explore :: Show a => Explorer a -> IO ()
 explore e = do
-    let ks = "hljkioq"
+    let ks = "hljkio0q"
     explorender e
     putStrLn $ (show $ lb e) ++ "\ESC[K\n" ++ (show $ rt e) ++ "\ESC[K"
     c <- silently (trap (`elem` ks) ("Valid keys: " ++ ks))
