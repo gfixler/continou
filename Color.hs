@@ -26,8 +26,8 @@ instance Show Color where
 
 instance Monoid Color where
     mempty = None
-    c `mappend` None = c
-    _ `mappend` c = c
+    None `mappend` c = c
+    c `mappend` _ = c
 
 data ColorPair = ColorPair (Color, Color)
 
