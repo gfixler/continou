@@ -5,7 +5,7 @@ module Image where
 import Data.Complex (Complex((:+)), magnitude)
 import Data.Fixed (mod')
 import Data.Function (on)
-import Data.Monoid ((<>))
+import Data.Monoid (Monoid, (<>))
 import Color
 
 type Coord = (Double, Double)
@@ -71,6 +71,9 @@ circle r i o = \c -> if inCircle r c then i c else o c
 checkers :: Image a -> Image a -> Image a
 checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
                              then b (x,y) else w (x,y)
+
+relayer :: Monoid a => (Coord -> Bool) -> Image a -> Image a -> Image a
+relayer p t f = \c -> if p c then ((t <> f) c) else ((f <> t) c)
 
 shift :: Coord -> Coord -> Coord
 shift (u,v) (x,y) = (x+u,y+v)
