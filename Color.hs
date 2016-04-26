@@ -21,6 +21,24 @@ data Color = None
            | White
            deriving (Bounded,Enum,Eq)
 
+none      = const None
+black     = const Black
+red       = const Red
+green     = const Green
+yellow    = const Yellow
+blue      = const Blue
+magenta   = const Magenta
+cyan      = const Cyan
+ltGray    = const LtGray
+dkGray    = const DkGray
+ltRed     = const LtRed
+ltGreen   = const LtGreen
+ltYellow  = const LtYellow
+ltBlue    = const LtBlue
+ltMagenta = const LtMagenta
+ltCyan    = const LtCyan
+white     = const White
+
 instance Show Color where
     show = flip withBG " "
 
