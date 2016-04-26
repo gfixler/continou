@@ -3,6 +3,7 @@
 module Image where
 
 import Data.Complex (Complex((:+)), magnitude)
+import Data.Fixed (mod')
 import Data.Function (on)
 import Data.Monoid ((<>))
 import Color
@@ -86,14 +87,7 @@ swirl :: Double -> Coord -> Coord
 swirl a c = rot (hypot c**a) c
 
 toRange :: Double -> Double -> Double -> Double
-toRange l h x | l == h = l
-              | h < l = toRange h l x
-              | l <= x && x <= h = x
-              | x > h = negate $ toRange (-h) (-l) (-x)
-              | otherwise = f (o / r) * r + x
-                    where f = fromIntegral . ceiling
-                          o = l - x
-                          r = h - l
+toRange a b x = ((x-a) `mod'` (b-a)) + a
 
 tile :: Coord -> Coord -> Coord -> Coord
 tile (l,b) (r,t) (x,y) = (x',y')
