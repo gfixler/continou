@@ -77,6 +77,9 @@ angle (x,y) = case signum a of (-1) -> pi + a + pi
                                _    -> a
     where a = atan2 y x
 
+rerange :: Fractional a => a -> a -> a -> a -> a -> a
+rerange a b a' b' x = ((x - a) / (b - a)) * (b' - a') + a'
+
 relayer :: Monoid a => (Coord -> Bool) -> Image a -> Image a -> Image a
 relayer p t f = \c -> if p c then ((t <> f) c) else ((f <> t) c)
 
