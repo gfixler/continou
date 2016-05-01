@@ -72,6 +72,11 @@ checkers :: Image a -> Image a -> Image a
 checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
                              then b (x,y) else w (x,y)
 
+angle :: Coord -> Double
+angle (x,y) = case signum a of (-1) -> pi + a + pi
+                               _    -> a
+    where a = atan2 y x
+
 relayer :: Monoid a => (Coord -> Bool) -> Image a -> Image a -> Image a
 relayer p t f = \c -> if p c then ((t <> f) c) else ((f <> t) c)
 
