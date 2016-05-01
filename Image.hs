@@ -19,8 +19,8 @@ lerp :: Fractional a => a -> a -> a -> a
 lerp a b t = (b - a) * t + a
 
 lerps :: (Enum a, Fractional a) => a -> a -> Int -> [a]
-lerps a b n = map (lerp a b) [0,1/n'..1]
-    where n' = fromIntegral (n-1)
+lerps a b n = map (lerp a b) (map (/n') [0..n'])
+    where n' = fromIntegral (n - 1)
 
 midCoord :: Coord -> Coord -> Coord
 midCoord (x,y) (x',y') = ((x + x') / 2, (y + y') / 2)
