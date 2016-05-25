@@ -68,6 +68,12 @@ inCircle r c = hypot c <= r
 circle :: Double -> Image a -> Image a -> Image a
 circle r i o = \c -> if inCircle r c then i c else o c
 
+ring :: Double -> Double -> Image a -> Image a -> Image a
+ring ir or i o = circle ir o (circle or i o)
+
+oring :: Monoid a => Double -> Double -> Double -> Image a -> Image a -> Image a -> Image a
+oring ir or bw i o b = ring (ir+bw) (or-bw) i o <>  ring ir or b o
+
 checkers :: Image a -> Image a -> Image a
 checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
                              then b (x,y) else w (x,y)
