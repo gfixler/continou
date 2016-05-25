@@ -131,3 +131,13 @@ mandelbrotColor = mandelbrot None intToColor
 sqrid :: Double -> Int -> Grid Coord
 sqrid iw rw = grid (-iw/2,-iw/2) (iw/2,iw/2) rw (rw `div` 2)
 
+type Cloud = [(Double, Coord)]
+
+inCloud :: Cloud -> Image Bool
+inCloud cs = \c -> foldr (\(r,p) -> (|| inCircle r (shift p c))) False cs
+
+cloud :: Cloud -> (Double -> Double) -> (Coord -> Coord) -> Image a -> Image a -> Image a
+cloud cs f g i o = \xy -> if (foldr (\(r,c) -> (|| inCircle r (shift c xy))) False cs')
+                           then i xy else o xy
+    where cs' = map (\(r,c) -> (f r, g c)) cs
+
