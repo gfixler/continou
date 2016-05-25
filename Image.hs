@@ -146,6 +146,11 @@ mandelbrotColor = mandelbrot None intToColor
 sqrid :: Double -> Int -> Grid Coord
 sqrid iw rw = grid (-iw/2,-iw/2) (iw/2,iw/2) rw (rw `div` 2)
 
+pick :: Image a -> [((Coord -> Bool), Image a)] -> Image a
+pick f xs = \c -> case find (\(p,_) -> p c) xs of
+                      Just (_,i) -> i c
+                      _ -> f c
+
 type Cloud = [(Double, Coord)]
 
 inCloud :: Cloud -> Image Bool
