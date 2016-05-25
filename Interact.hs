@@ -4,55 +4,63 @@ import Color
 import Image
 import KeyFSM
 
-data Explorer a = Explorer { img :: Image a
-                           , lb  :: Coord
-                           , rt  :: Coord
-                           , w   :: Int
-                           , h   :: Int
-                           }
+eraseToEOL :: IO ()
+eraseToEOL = putStr "\ESC[K"
 
-instance Show a => Show (Explorer a) where
-    show e = show (render (img e) (grid (lb e) (rt e) (w e) (h e)))
+clearScrn :: IO ()
+clearScrn = putStr "\ESC[2J"
 
-defColorExplorer :: Explorer Color
-defColorExplorer = Explorer (circle 4 (const Red) (const White)) (-5,-5) (5,5) 25 12
+posCursor :: Int -> Int -> IO ()
+posCursor x y = putStr ("\ESC[" ++ show x ++ ";" ++ show y ++ "f")
 
-explorender :: Show a => Explorer a -> IO ()
-explorender e = do
-    putStrLn "\ESC[0;0f"
-    putStrLn $ show $ render (img e) (grid (lb e) (rt e) (w e) (h e))
+homeCursor :: IO ()
+homeCursor = posCursor 0 0
+
+newline :: IO ()
+newline = putStrLn ""
+
+data View a = View { lb  :: Coord
+                   , rt  :: Coord
+                   , w   :: Int
+                   , h   :: Int }
+
+explorender :: Show a => Image a -> View a -> IO ()
+explorender i v = do
+    homeCursor
+    print $ render i (grid (lb v) (rt v) (w v) (h v))
     return ()
 
 type CoordMod = Double -> Double
 
-modView :: CoordMod -> CoordMod -> CoordMod -> CoordMod -> Explorer a -> Explorer a
-modView l b r t e = e { lb = let (x,y) = lb e in (l x,b y)
-                      , rt = let (x,y) = rt e in (r x,t y) }
+modView :: CoordMod -> CoordMod -> CoordMod -> CoordMod -> View a -> View a
+modView l b r t v = v { lb = let (x,y) = lb v in (l x,b y)
+                      , rt = let (x,y) = rt v in (r x,t y) }
 
-pan :: Double -> Explorer a -> Explorer a
-pan n e = modView (+n') id (+n') id e
-    where (l,_) = lb e
-          (r,_) = rt e
+pan :: Double -> View a -> View a
+pan n v = modView (+n') id (+n') id v
+    where (l,_) = lb v
+          (r,_) = rt v
           n' = (r - l) * n
 
-ped :: Double -> Explorer a -> Explorer a
-ped n e = modView id (+n') id (+n') e
-    where (_,b) = lb e
-          (_,t) = rt e
+ped :: Double -> View a -> View a
+ped n v = modView id (+n') id (+n') v
+    where (_,b) = lb v
+          (_,t) = rt v
           n' = (t - b) * n
 
-zoom :: Double -> Explorer a -> Explorer a
-zoom n e = modView (const (lerp l r n))
+zoom :: Double -> View a -> View a
+zoom n v = modView (const (lerp l r n))
                    (const (lerp b t n))
                    (const (lerp r l n))
-                   (const (lerp t b n)) e
-    where (l,b) = lb e
-          (r,t) = rt e
+                   (const (lerp t b n)) v
+    where (l,b) = lb v
+          (r,t) = rt v
 
 data ExploreAction = ViewPan Double
                    | ViewPed Double
                    | Zoom Double
                    | ResetView
+                   | Times Int ExploreAction
                    | NoAction
 
 explorelate :: Char -> ExploreAction
@@ -60,36 +68,41 @@ explorelate 'h' = ViewPan (-0.2)
 explorelate 'l' = ViewPan 0.2
 explorelate 'j' = ViewPed (-0.2)
 explorelate 'k' = ViewPed (0.2)
-explorelate 'H' = ViewPan (-0.5)
-explorelate 'L' = ViewPan 0.5
-explorelate 'J' = ViewPed (-0.5)
-explorelate 'K' = ViewPed (0.5)
-explorelate 'i' = Zoom 0.09
-explorelate 'o' = Zoom (-0.09)
-explorelate 'I' = Zoom 0.2
-explorelate 'O' = Zoom (-0.2)
+explorelate 'H' = Times 2 (ViewPan (-0.2))
+explorelate 'L' = Times 2 (ViewPan 0.2)
+explorelate 'J' = Times 2 (ViewPed (-0.2))
+explorelate 'K' = Times 2 (ViewPed (0.2))
+explorelate 'i' = Zoom (1/10)
+explorelate 'o' = Zoom (-1/8)
+explorelate 'I' = Times 3 (Zoom (1/10))
+explorelate 'O' = Times 3 (Zoom (-1/8))
 explorelate '0' = ResetView
 explorelate _   = NoAction
 
-exploreact :: ExploreAction -> Explorer a -> Explorer a
-exploreact (ViewPan n) = pan n
-exploreact (ViewPed n) = ped n
-exploreact (Zoom n)    = zoom n
-exploreact ResetView   = \e -> e { lb = (-5,-5), rt = (5,5) }
-exploreact _           = id
+exploreview :: ExploreAction -> View a -> View a
+exploreview (ViewPan n) = pan n
+exploreview (ViewPed n) = ped n
+exploreview (Zoom n)    = zoom n
+exploreview (Times t a) | t < 1 = id
+                       | otherwise = exploreview (Times (t-1) a)
+                       . exploreview a
+exploreview ResetView   = \v -> v { lb = (-5,-5), rt = (5,5) }
+exploreview _           = id
 
-explore :: Show a => Explorer a -> IO ()
-explore e = do
+eolStrLn :: String -> IO ()
+eolStrLn s = do
+    putStr s
+    eraseToEOL
+    newline
+
+explore :: Show a => Image a -> View a -> IO ()
+explore i v = clearScrn >> do
     let ks = "hljkioHLJKIO0q"
-    explorender e
-    putStrLn $ (show $ lb e) ++ "\ESC[K\n" ++ (show $ rt e) ++ "\ESC[K"
+    explorender i v
+    eolStrLn $ show (lb v)
+    eolStrLn $ show (rt v)
     c <- silently (trap (`elem` ks) ("Valid keys: " ++ ks))
     if c == 'q'
         then return ()
-        else explore (exploreact (explorelate c) e)
-
-main :: Show a => Explorer a -> IO ()
-main e = do
-    putStrLn "\ESC[2J;\ESC[0;0f"
-    explore e
+        else explore i (exploreview (explorelate c) v)
 
