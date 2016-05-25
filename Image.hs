@@ -72,6 +72,9 @@ checkers :: Image a -> Image a -> Image a
 checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
                              then b (x,y) else w (x,y)
 
+sine :: Double -> Double -> Image a -> Image a -> Image a
+sine a w b t = \(x,y) -> if y <= a * sin (x * w) then b (x,y) else t (x,y)
+
 relayer :: Monoid a => (Coord -> Bool) -> Image a -> Image a -> Image a
 relayer p t f = \c -> if p c then ((t <> f) c) else ((f <> t) c)
 
