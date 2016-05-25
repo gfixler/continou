@@ -75,6 +75,20 @@ checkers b w = \(x,y) -> if ((==) `on` (`mod` 2) . round) x y
 sine :: Double -> Double -> Image a -> Image a -> Image a
 sine a w b t = \(x,y) -> if y <= a * sin (x * w) then b (x,y) else t (x,y)
 
+angle :: Coord -> Double
+angle (x,y) = case signum a of (-1) -> pi + a + pi
+                               _    -> a
+    where a = atan2 y x
+
+rerange :: Fractional a => a -> a -> a -> a -> a -> a
+rerange a b a' b' x = ((x - a) / (b - a)) * (b' - a') + a'
+
+radials :: Num a => [a] -> Image a
+radials xs = (xs !!) . index
+    where index = floor . inRange . angle
+          inRange = rerange 0 (2*pi) 0 listlen
+          listlen = fromIntegral $ length xs
+
 relayer :: Monoid a => (Coord -> Bool) -> Image a -> Image a -> Image a
 relayer p t f = \c -> if p c then ((t <> f) c) else ((f <> t) c)
 
