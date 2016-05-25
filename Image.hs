@@ -5,7 +5,9 @@ module Image where
 import Data.Complex (Complex((:+)), magnitude)
 import Data.Fixed (mod')
 import Data.Function (on)
+import Data.List (minimumBy)
 import Data.Monoid (Monoid, (<>))
+import Data.Ord (comparing)
 import Color
 
 type Coord = (Double, Double)
@@ -91,6 +93,12 @@ radials xs = (xs !!) . index
     where index = floor . inRange . angle
           inRange = rerange 0 (2*pi) 0 listlen
           listlen = fromIntegral $ length xs
+
+dist :: Coord -> Coord -> Double
+dist (x,y) (u,v) = sqrt ((x-u)*(x-u)+(y-v)*(y-v))
+
+voronoi :: [(Coord,Image a)] -> Image a
+voronoi cas = \c -> (snd $ minimumBy (comparing (dist c . fst)) cas) c
 
 relayer :: Monoid a => (Coord -> Bool) -> Image a -> Image a -> Image a
 relayer p t f = \c -> if p c then ((t <> f) c) else ((f <> t) c)
