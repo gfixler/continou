@@ -100,6 +100,13 @@ dist (x,y) (u,v) = sqrt ((x-u)*(x-u)+(y-v)*(y-v))
 voronoi :: [(Coord,Image a)] -> Image a
 voronoi cas = \c -> (snd $ minimumBy (comparing (dist c . fst)) cas) c
 
+quadBez :: Coord -> Coord -> Coord -> Int -> [Coord]
+quadBez (ax,ay) (bx,by) (cx,cy) n = zip xs ys
+    where n' = fromIntegral n
+          ts = [0,1/n'..1]
+          xs = [lerp (lerp ax bx t) (lerp bx cx t) t | t <- ts]
+          ys = [lerp (lerp ay by t) (lerp by cy t) t | t <- ts]
+
 relayer :: Monoid a => (Coord -> Bool) -> Image a -> Image a -> Image a
 relayer p t f = \c -> if p c then ((t <> f) c) else ((f <> t) c)
 
