@@ -5,7 +5,7 @@ module Image where
 import Data.Complex (Complex((:+)), magnitude)
 import Data.Fixed (mod')
 import Data.Function (on)
-import Data.List (minimumBy)
+import Data.List (find, minimumBy)
 import Data.Monoid (Monoid, (<>))
 import Data.Ord (comparing)
 import Color
@@ -183,4 +183,12 @@ brain = [ (79.924,(263.56,144.625))
         , (208.85,(179.354,164.606))
         , (208.85,(194.578,162.227))
         ]
+
+picker =
+        render (pick (const Yellow)
+        [ (uncurry ((==) `on` (`mod` 2) . round), (const Black))
+        , ((>2) . snd,leftAndRight (const Blue) (const Green))
+        , ((>(-2)) . snd,circle 4 (const Red) (const White))]
+        )
+        (grid (-15,-15) (15,15) 60 30)
 
