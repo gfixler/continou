@@ -19,7 +19,7 @@ defColorExplorer = Explorer (circle 4 (const Red) (const White)) (-5,-5) (5,5) 2
 
 explorender :: Show a => Explorer a -> IO ()
 explorender e = do
-    putStrLn "\ESC[0;0f"
+    homeCursor
     putStrLn $ show $ render (img e) (grid (lb e) (rt e) (w e) (h e))
     return ()
 
@@ -78,6 +78,12 @@ exploreact (Zoom n)    = zoom n
 exploreact ResetView   = \e -> e { lb = (-5,-5), rt = (5,5) }
 exploreact _           = id
 
+clearScreen :: IO ()
+clearScreen = putStr "\ESC[2J"
+
+homeCursor :: IO ()
+homeCursor = putStr "\ESC[0;0f"
+
 explore :: Show a => Explorer a -> IO ()
 explore e = do
     let ks = "hljkioHLJKIO0q"
@@ -90,6 +96,7 @@ explore e = do
 
 main :: Show a => Explorer a -> IO ()
 main e = do
-    putStrLn "\ESC[2J;\ESC[0;0f"
+    clearScreen
+    homeCursor
     explore e
 
