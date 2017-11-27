@@ -84,6 +84,12 @@ clearScreen = putStr "\ESC[2J"
 homeCursor :: IO ()
 homeCursor = putStr "\ESC[0;0f"
 
+hideCursor :: IO ()
+hideCursor = putStr "\ESC[?25l"
+
+showCursor :: IO ()
+showCursor = putStr "\ESC[?25h"
+
 explore :: Show a => Explorer a -> IO ()
 explore e = do
     let ks = "hljkioHLJKIO0q"
@@ -98,5 +104,7 @@ main :: Show a => Explorer a -> IO ()
 main e = do
     clearScreen
     homeCursor
+    hideCursor
     explore e
+    showCursor
 
