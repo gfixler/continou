@@ -1,6 +1,14 @@
+module PPM where
+
 import Color
 
 type PPMCol = (Int, Int, Int)
+
+header :: Int -> Int -> Int -> String
+header w h b = "P3\n" ++ show w ++ " " ++ show h ++ "\n" ++ show b ++ "\n"
+
+renderPPM :: PPMCol -> String
+renderPPM (r,g,b) = show r ++ " " ++ show g ++ " " ++ show b
 
 vga :: Color -> PPMCol
 vga None      = (0,0,0)
