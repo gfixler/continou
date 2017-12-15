@@ -75,3 +75,34 @@ withBG c s = bg c ++ s ++ bg None
 withBGFG :: Color -> Color -> String -> String
 withBGFG bg fg = withBG bg . withFG fg
 
+data RGBLev = L0 | L1 | L2 | L3 | L4 | L5
+    deriving (Bounded, Enum, Eq, Ord, Show)
+
+data RGB = RGB RGBLev RGBLev RGBLev
+    deriving (Eq, Ord)
+
+-- http://web.archive.org/web/20131009193526/http://bitmote.com/index.php?post/2012/11/19/Using-ANSI-Color-Codes-to-Colorize-Your-Bash-Prompt-on-Linux
+rgbnum :: RGB -> Int
+rgbnum (RGB r g b) = fromEnum r * 36 + 16 + fromEnum g * 6 + fromEnum b
+
+rgbfg :: RGB -> String
+rgbfg rgb = "\ESC[38;5;" ++ show (rgbnum rgb) ++ "m"
+
+rgbbg :: RGB -> String
+rgbbg rgb = "\ESC[48;5;" ++ show (rgbnum rgb) ++ "m"
+
+rgbbgfg :: RGB -> RGB -> String
+rgbbgfg bg fg = "\ESC[48;5;" ++ show (rgbnum bg) ++ ";38;5;" ++ show (rgbnum fg) ++ "m"
+
+withRGBFG :: RGB -> String -> String
+withRGBFG rgb s = rgbfg rgb ++ s ++ fg None
+
+withRGBBG :: RGB -> String -> String
+withRGBBG rgb s = rgbbg rgb ++ s ++ bg None
+
+withRGBBGFG :: RGB -> RGB -> String -> String
+withRGBBGFG bg fg = withRGBBG bg . withRGBFG fg
+
+instance Show RGB where
+    show = flip withRGBBG " "
+

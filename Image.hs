@@ -5,7 +5,9 @@ module Image where
 import Data.Complex (Complex((:+)), magnitude)
 import Data.Fixed (mod')
 import Data.Function (on)
-import Data.Monoid (Monoid, (<>))
+import Data.List (find, sortBy)
+import Data.Monoid (Monoid, (<>), Sum(..))
+import Data.Ord (comparing)
 import Color
 
 type Coord = (Double, Double)
@@ -62,6 +64,9 @@ rect lb rt i o = \c -> if inRect lb rt c then i c else o c
 hypot :: Coord -> Double
 hypot (x,y) = sqrt (x * x + y * y)
 
+hypot' :: Coord -> Coord -> Double
+hypot' (x,y) (u,v) = hypot (x-u,y-v)
+
 inCircle :: Double -> Coord -> Bool
 inCircle r c = hypot c <= r
 
@@ -110,4 +115,22 @@ mandelbrotColor = mandelbrot None intToColor
 
 sqrid :: Double -> Int -> Grid Coord
 sqrid iw rw = grid (-iw/2,-iw/2) (iw/2,iw/2) rw (rw `div` 2)
+
+pick :: Image a -> [(Coord -> Bool, Image a)] -> Image a
+pick f xs = \c -> case find (\(p,_) -> p c) xs of
+                      Just (_,i) -> i c
+                      _ -> f c
+
+additive :: a -> b -> Sum a
+additive = const . Sum
+
+(.+) :: ((a -> b) -> c) -> b -> c
+f .+ x = f (const x)
+
+xs :: [(Coord, Image Color)]
+xs = [((-3,2), const Blue), ((4,3), const Green), ((-4,-2), const Yellow)]
+
+-- voronoi :: Image a -> [(Coord, Image a)] -> Image a
+-- voronoi f [] = f
+-- voronoi _ xs = \c -> snd $ head $ sortBy (comparing (hypot' c . fst)) xs
 
